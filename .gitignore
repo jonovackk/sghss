@@ -1,0 +1,71 @@
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+/dist/
+/build/
+/out/
+
+# Test coverage
+/coverage/
+/.nyc_output/
+
+# Logs
+logs/
+*.log
+debug.log*
+
+# Runtime files
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Env files
+.env
+.env.*.local
+.env.test
+.env.local
+
+# Docker
+docker-compose.override.yml
+.env.docker
+
+# IDE/editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*~
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.csr
+
+# Misc
+.cache/
+.parcel-cache/
+.pnp/
+.pnp.js
+*.tgz
