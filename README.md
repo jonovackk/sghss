@@ -1,33 +1,52 @@
-# SGHSS – Backend do Sistema de Gestão Hospitalar de Serviços de Saúde  
-### Módulo de Agendamento de Consultas
+📝 SGHSS – Backend do Sistema de Gestão Hospitalar (Módulo de Agendamentos)
 
-Este projeto implementa o **backend** do módulo de **Agendamento de Consultas** do SGHSS.  
-O objetivo é permitir o cadastro de pacientes, profissionais de saúde e o gerenciamento de consultas, seguindo os requisitos da disciplina, utilizando arquitetura REST e banco relacional.
+Este projeto implementa o backend do módulo de Agendamento de Consultas do SGHSS (Sistema de Gestão Hospitalar e Serviços de Saúde).
 
----
+O sistema permite:
 
-## 🚀 Tecnologias Utilizadas
+Cadastro e gerenciamento de pacientes
 
-- **Node.js** + **Express**
-- **Sequelize ORM**
-- **PostgreSQL** (via Docker ou instalação local)
-- **JSON Web Token (JWT)** – autenticação
-- **bcryptjs** – criptografia de senha
-- **dotenv** – variáveis de ambiente
+Cadastro e gerenciamento de profissionais de saúde
 
----
+Agendamento, listagem e cancelamento de consultas
 
-## 📦 Como Rodar o Projeto
+Autenticação com JWT
 
-### 1️⃣ Instalar dependências
-```bash
+Persistência em PostgreSQL
+
+PostgreSQL
+
+📚 Tecnologias Utilizadas
+
+Node.js + Express
+
+Sequelize ORM
+
+PostgreSQL (via Docker ou instalação local)
+
+JSON Web Token (JWT)
+
+bcryptjs
+
+dotenv
+
+
+
+⚙️ Como Rodar o Projeto
+1️⃣ Instalar dependências
 npm install
-2️⃣ Criar um arquivo .env
-Exemplo de configuração usando PostgreSQL:
 
-env
-Copiar código
+2️⃣ Criar o arquivo .env
+
+Crie o arquivo na raiz:
+
+touch .env
+
+
+Conteúdo sugerido:
+
 PORT=3000
+
 DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_NAME=sghss
@@ -36,119 +55,128 @@ DB_PASS=sghss
 
 JWT_SECRET=MinhaChaveSecreta
 JWT_EXPIRES_IN=8h
-3️⃣ Subir o banco PostgreSQL (com Docker)
-Se quiser usar Docker, basta executar:
 
-bash
-Copiar código
+3️⃣ Subir o banco PostgreSQL (Docker)
 docker compose up -d
-Isso sobe um container com PostgreSQL disponível em localhost:5432.
+
+
+ou:
+
+docker run --name sghss \
+  -e POSTGRES_USER=sghss \
+  -e POSTGRES_PASSWORD=sghss \
+  -e POSTGRES_DB=sghss \
+  -p 5432:5432 -d postgres:16
 
 4️⃣ Rodar o servidor
-bash
-Copiar código
 npm run dev
-A API estará acessível em:
 
-arduino
-Copiar código
+
+A API estará disponível em:
+
 http://localhost:3000
-Para testar a saúde do servidor:
 
-bash
-Copiar código
-GET http://localhost:3000/api/health
-🧑‍⚕️ Funcionalidades Implementadas
-🔹 Autenticação
-Cadastro de usuários (paciente e profissional)
+🔐 Criar Usuário Inicial
 
-Login com geração de token JWT
+Caso o projeto não possua rota de registro, crie um usuário diretamente no banco:
 
-Proteção de rotas com middleware
+INSERT INTO users (email, password, role)
+VALUES (
+  'admin@example.com',
+  '$2a$10$4HB6t6rGUeA1rXsxCTH1OOlQF2H5oKnOosc.2XqOMc6t9wLz6rgEK',
+  'ADMIN'
+);
 
-🔹 Pacientes
-Cadastro
 
-Atualização
+A senha desse hash é: 123456
 
-Listagem
+🔑 Autenticação
+1. Fazer login
+POST /auth/login
 
-Exclusão
 
-🔹 Profissionais
-Cadastro
+Body:
 
-Atualização
+{
+  "email": "admin@example.com",
+  "password": "123456"
+}
 
-Listagem
 
-Exclusão
+Resposta:
 
-🔹 Consultas (Appointments)
-Criar consulta
+{
+  "token": "..."
+}
 
-Listar consultas (com filtros)
+2. Usar o token nas demais rotas
 
-Detalhar consulta
+Headers:
 
-Cancelar consulta
+Authorization: Bearer SEU_TOKEN_AQUI
 
 📌 Endpoints Principais
-Autenticação
-swift
-Copiar código
-POST /api/auth/register/patient
-POST /api/auth/register/professional
-POST /api/auth/login
 Pacientes
-bash
-Copiar código
-GET    /api/patients
-GET    /api/patients/:id
-PATCH  /api/patients/:id
-DELETE /api/patients/:id
-Profissionais
-bash
-Copiar código
-GET    /api/professionals
-GET    /api/professionals/:id
-PATCH  /api/professionals/:id
-DELETE /api/professionals/:id
-Consultas
-bash
-Copiar código
-POST   /api/appointments
-GET    /api/appointments
-GET    /api/appointments/:id
-PATCH  /api/appointments/:id/cancel
-🗂️ Organização do Código
-O projeto segue arquitetura em camadas:
+GET    /patients
+GET    /patients/:id
+POST   /patients
+PATCH  /patients/:id
+DELETE /patients/:id
 
-bash
-Copiar código
+Profissionais
+GET    /professionals
+GET    /professionals/:id
+POST   /professionals
+PATCH  /professionals/:id
+DELETE /professionals/:id
+
+Consultas
+POST   /appointments
+GET    /appointments
+GET    /appointments/:id
+PATCH  /appointments/:id/cancel
+
+🧪 Como Testar a API (Fluxo recomendado)
+
+Fazer login → obter token
+
+Criar paciente
+
+Criar profissional
+
+Criar agendamento
+
+Listar agendamentos
+
+Cancelar agendamento
+
+Testar erros:
+
+Sem token → 401
+
+CPF duplicado → 400
+
+IDs inválidos → 400/404
+
+🗂️ Estrutura do Projeto
 src/
-├── config/        # Configuração do banco (Sequelize)
-├── controllers/   # Lida com a entrada e saída HTTP
-├── middlewares/   # Autenticação JWT
-├── models/        # Entidades do sistema (ORM)
-├── routes/        # Endpoints da API
-├── services/      # Regras de negócio
+├── config/
+├── controllers/
+├── middlewares/
+├── models/
+├── routes/
+├── services/
 ├── app.js
 └── server.js
-🧪 Evidências de Funcionamento
-As evidências (prints das requisições funcionando) estão incluídas no PDF do trabalho:
 
-Cadastro de pacientes e profissionais
+📄 Evidências
 
-Login com geração de token
-
-Listagem de entidades
-
-Criação e cancelamento de consultas
-
-Retorno de erro em validações
-
+As evidências completas (prints funcionando) estão no PDF do trabalho entregue.
 
 👤 Autor
+
+Jonathan Novack
+GitHub: https://github.com/jonovackk
+
 Jonathan Novack
 GitHub: https://github.com/jonovackk
