@@ -1,44 +1,37 @@
-📝 SGHSS – Backend do Sistema de Gestão Hospitalar (Módulo de Agendamentos)
+# SGHSS – Backend do Sistema de Gestão Hospitalar (Módulo de Agendamentos)
 
-Este projeto implementa o backend do módulo de Agendamento de Consultas do SGHSS (Sistema de Gestão Hospitalar e Serviços de Saúde).
+Este projeto implementa o backend do **módulo de Agendamento de Consultas** do SGHSS (Sistema de Gestão Hospitalar e Serviços de Saúde).
 
 O sistema permite:
 
-Cadastro e gerenciamento de pacientes
+- Cadastro e gerenciamento de **pacientes**
+- Cadastro e gerenciamento de **profissionais de saúde**
+- **Agendamento**, **listagem** e **cancelamento** de consultas
+- Autenticação com **JWT**
+- Persistência em **PostgreSQL**
 
-Cadastro e gerenciamento de profissionais de saúde
+---
 
-Agendamento, listagem e cancelamento de consultas
+## 🚀 Tecnologias Utilizadas
 
-Autenticação com JWT
+- Node.js + Express  
+- Sequelize ORM  
+- PostgreSQL (via Docker ou instalação local)  
+- JSON Web Token (JWT)  
+- bcryptjs  
+- dotenv  
 
-Persistência em PostgreSQL
+---
 
-PostgreSQL
+## ⚙️ Como Rodar o Projeto
 
-📚 Tecnologias Utilizadas
-
-Node.js + Express
-
-Sequelize ORM
-
-PostgreSQL (via Docker ou instalação local)
-
-JSON Web Token (JWT)
-
-bcryptjs
-
-dotenv
-
-
-
-⚙️ Como Rodar o Projeto
-1️⃣ Instalar dependências
+### 1️⃣ Instalar dependências
+```bash
 npm install
 
 2️⃣ Criar o arquivo .env
 
-Crie o arquivo na raiz:
+Crie o arquivo na raiz do projeto:
 
 touch .env
 
@@ -56,11 +49,12 @@ DB_PASS=sghss
 JWT_SECRET=MinhaChaveSecreta
 JWT_EXPIRES_IN=8h
 
+
 3️⃣ Subir o banco PostgreSQL (Docker)
 docker compose up -d
 
 
-ou:
+Ou:
 
 docker run --name sghss \
   -e POSTGRES_USER=sghss \
@@ -103,7 +97,7 @@ Body:
 }
 
 
-Resposta:
+Resposta esperada:
 
 {
   "token": "..."
@@ -116,21 +110,21 @@ Headers:
 Authorization: Bearer SEU_TOKEN_AQUI
 
 📌 Endpoints Principais
-Pacientes
+👥 Pacientes
 GET    /patients
 GET    /patients/:id
 POST   /patients
 PATCH  /patients/:id
 DELETE /patients/:id
 
-Profissionais
+🩺 Profissionais
 GET    /professionals
 GET    /professionals/:id
 POST   /professionals
 PATCH  /professionals/:id
 DELETE /professionals/:id
 
-Consultas
+📅 Consultas (Appointments)
 POST   /appointments
 GET    /appointments
 GET    /appointments/:id
@@ -138,7 +132,7 @@ PATCH  /appointments/:id/cancel
 
 🧪 Como Testar a API (Fluxo recomendado)
 
-Fazer login → obter token
+Fazer login → obter token JWT
 
 Criar paciente
 
@@ -150,13 +144,13 @@ Listar agendamentos
 
 Cancelar agendamento
 
-Testar erros:
+Testar casos de erro:
 
-Sem token → 401
+Sem token → 401 Unauthorized
 
-CPF duplicado → 400
+CPF duplicado → 400 Bad Request
 
-IDs inválidos → 400/404
+IDs inexistentes → 400/404
 
 🗂️ Estrutura do Projeto
 src/
@@ -171,12 +165,9 @@ src/
 
 📄 Evidências
 
-As evidências completas (prints funcionando) estão no PDF do trabalho entregue.
+As evidências completas (prints das requisições funcionando) estão incluídas no PDF do trabalho entregue.
 
 👤 Autor
-
-Jonathan Novack
-GitHub: https://github.com/jonovackk
 
 Jonathan Novack
 GitHub: https://github.com/jonovackk
