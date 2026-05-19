@@ -1,43 +1,56 @@
-# SGHSS – Backend do Sistema de Gestão Hospitalar (Módulo de Agendamentos)
+# SGHSS – Hospital Scheduling System (Backend)
 
-Este projeto implementa o backend do **módulo de Agendamento de Consultas** do SGHSS (Sistema de Gestão Hospitalar e Serviços de Saúde).
-
-O sistema permite:
-
-- Cadastro e gerenciamento de **pacientes**
-- Cadastro e gerenciamento de **profissionais de saúde**
-- **Agendamento**, **listagem** e **cancelamento** de consultas
-- Autenticação com **JWT**
-- Persistência em **PostgreSQL**
+A RESTful API for managing appointments in a healthcare environment. Built with Node.js, Express, PostgreSQL, and Docker, with JWT-based authentication and full CRUD operations for patients, healthcare professionals, and consultations.
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+## Features
 
-- Node.js + Express  
-- Sequelize ORM  
-- PostgreSQL (via Docker ou instalação local)  
-- JSON Web Token (JWT)  
-- bcryptjs  
-- dotenv  
+- Patient registration and management
+- Healthcare professional registration and management
+- Appointment scheduling, listing, and cancellation
+- JWT authentication with role-based access
+- PostgreSQL persistence via Sequelize ORM
+- Docker-ready setup
 
 ---
 
-## ⚙️ Como Rodar o Projeto
+## Tech stack
 
-### 1️⃣ Instalar dependências
+![Skills](https://skillicons.dev/icons?i=nodejs,express,postgresql,docker,js,git)
+
+| Layer | Technology |
+|-------|-----------|
+| Runtime | Node.js |
+| Framework | Express 5 |
+| ORM | Sequelize |
+| Database | PostgreSQL 16 |
+| Auth | JSON Web Token (JWT) + bcryptjs |
+| Dev tooling | Nodemon, dotenv |
+| Infrastructure | Docker / Docker Compose |
+
+---
+
+## Getting started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/jonovackk/sghss.git
+cd sghss
+```
+
+### 2. Install dependencies
+
 ```bash
 npm install
+```
 
-2️⃣ Criar o arquivo .env
+### 3. Configure environment variables
 
-Crie o arquivo na raiz do projeto:
+Create a `.env` file in the project root:
 
-touch .env
-
-
-Conteúdo sugerido:
-
+```env
 PORT=3000
 
 DB_HOST=127.0.0.1
@@ -46,128 +59,127 @@ DB_NAME=sghss
 DB_USER=sghss
 DB_PASS=sghss
 
-JWT_SECRET=MinhaChaveSecreta
+JWT_SECRET=your_secret_key
 JWT_EXPIRES_IN=8h
+```
 
+### 4. Start the database (Docker)
 
-3️⃣ Subir o banco PostgreSQL (Docker)
+```bash
 docker compose up -d
+```
 
+Or run PostgreSQL manually:
 
-Ou:
-
+```bash
 docker run --name sghss \
   -e POSTGRES_USER=sghss \
   -e POSTGRES_PASSWORD=sghss \
   -e POSTGRES_DB=sghss \
   -p 5432:5432 -d postgres:16
+```
 
-4️⃣ Rodar o servidor
+### 5. Start the server
+
+```bash
 npm run dev
+```
 
+The API will be available at `http://localhost:3000`.
 
-A API estará disponível em:
+---
 
-http://localhost:3000
+## Authentication
 
-🔐 Criar Usuário Inicial
+### Login
 
-Caso o projeto não possua rota de registro, crie um usuário diretamente no banco:
-
-INSERT INTO users (email, password, role)
-VALUES (
-  'admin@example.com',
-  '$2a$10$4HB6t6rGUeA1rXsxCTH1OOlQF2H5oKnOosc.2XqOMc6t9wLz6rgEK',
-  'ADMIN'
-);
-
-
-A senha desse hash é: 123456
-
-🔑 Autenticação
-1. Fazer login
+```http
 POST /auth/login
-
-
-Body:
+Content-Type: application/json
 
 {
   "email": "admin@example.com",
   "password": "123456"
 }
+```
 
+**Response:**
 
-Resposta esperada:
-
+```json
 {
-  "token": "..."
+  "token": "<jwt_token>"
 }
+```
 
-2. Usar o token nas demais rotas
+Use the token in all protected routes:
 
-Headers:
+```http
+Authorization: Bearer <jwt_token>
+```
 
-Authorization: Bearer SEU_TOKEN_AQUI
+---
 
-📌 Endpoints Principais
-👥 Pacientes
-GET    /patients
-GET    /patients/:id
-POST   /patients
-PATCH  /patients/:id
-DELETE /patients/:id
+## API endpoints
 
-🩺 Profissionais
-GET    /professionals
-GET    /professionals/:id
-POST   /professionals
-PATCH  /professionals/:id
-DELETE /professionals/:id
+### Patients
 
-📅 Consultas (Appointments)
-POST   /appointments
-GET    /appointments
-GET    /appointments/:id
-PATCH  /appointments/:id/cancel
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/patients` | List all patients |
+| GET | `/patients/:id` | Get patient by ID |
+| POST | `/patients` | Create patient |
+| PATCH | `/patients/:id` | Update patient |
+| DELETE | `/patients/:id` | Delete patient |
 
-🧪 Como Testar a API (Fluxo recomendado)
+### Healthcare professionals
 
-Fazer login → obter token JWT
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/professionals` | List all professionals |
+| GET | `/professionals/:id` | Get professional by ID |
+| POST | `/professionals` | Create professional |
+| PATCH | `/professionals/:id` | Update professional |
+| DELETE | `/professionals/:id` | Delete professional |
 
-Criar paciente
+### Appointments
 
-Criar profissional
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/appointments` | Create appointment |
+| GET | `/appointments` | List all appointments |
+| GET | `/appointments/:id` | Get appointment by ID |
+| PATCH | `/appointments/:id/cancel` | Cancel appointment |
 
-Criar agendamento
+---
 
-Listar agendamentos
+## Project structure
 
-Cancelar agendamento
-
-Testar casos de erro:
-
-Sem token → 401 Unauthorized
-
-CPF duplicado → 400 Bad Request
-
-IDs inexistentes → 400/404
-
-🗂️ Estrutura do Projeto
+```
 src/
-├── config/
-├── controllers/
-├── middlewares/
-├── models/
-├── routes/
-├── services/
+├── config/         # Database connection
+├── controllers/    # Request handlers
+├── middlewares/    # Auth middleware
+├── models/         # Sequelize models
+├── routes/         # Route definitions
+├── services/       # Business logic
 ├── app.js
 └── server.js
+```
 
-📄 Evidências
+---
 
-As evidências completas (prints das requisições funcionando) estão incluídas no PDF do trabalho entregue.
+## Error handling
 
-👤 Autor
+| Scenario | HTTP Status |
+|----------|-------------|
+| Missing or invalid token | 401 Unauthorized |
+| Duplicate CPF | 400 Bad Request |
+| Resource not found | 404 Not Found |
+| Validation errors | 400 Bad Request |
 
-Jonathan Novack
-GitHub: https://github.com/jonovackk
+---
+
+## Author
+
+**Jonathan Novack**
+[github.com/jonovackk](https://github.com/jonovackk)
